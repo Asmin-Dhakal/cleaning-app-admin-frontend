@@ -1,12 +1,12 @@
 export interface User {
     id: string;
     email: string;
-    fristName: string;
+    firstName: string;
     lastName: string;
     phone?: string;
     userType: 'admin';
     roles: string[];
-    premissions: string[];
+    permissions: string[];
 }
 
 export interface AuthTokens {

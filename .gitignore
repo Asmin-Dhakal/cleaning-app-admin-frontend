@@ -7,18 +7,69 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+
+# Build output
 dist
 dist-ssr
+build
+out
+
+# Environment variables - NEVER commit these
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+.env.staging
+
+# Local config overrides
 *.local
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Test coverage
+coverage
+*.lcov
+.nyc_output
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Vite cache
+.vite
+
+# Package manager locks (keep only one — remove the ones you don't use)
+# yarn.lock
+# pnpm-lock.yaml
+
+# Debug
+.pnpm-debug.log*
+
+# Certificates / secrets
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+secrets/

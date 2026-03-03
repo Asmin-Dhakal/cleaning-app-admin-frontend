@@ -1,17 +1,18 @@
 import { useEffect, useRef } from "react";
-import { useAuthStore} from "../stores/authStore";
+import { useAuthStore } from "../stores/authStore";
 import { jwtDecode } from "jwt-decode";
+import { authApi } from "../api/authApi";
 
 const TOKEN_REFRESH_BUFFER = 60 * 1000; // 1 minute
 
 export const useTokenRefresh = () => {
-    const {accessToken, refreshToken, setAuth} = useAuthStore();
+    const { accessToken, refreshToken, setAuth } = useAuthStore();
     const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 
     const scheduleRefresh = (token: string) => {
-        try{
-            const decoded = jwtDecode<{ exp: number}>(token);
+        try {
+            const decoded = jwtDecode<{ exp: number }>(token);
             const currentTime = Date.now();
             const expiryTime = decoded.exp * 1000;
             const timeUntilExpiry = expiryTime - currentTime;
@@ -19,46 +20,35 @@ export const useTokenRefresh = () => {
             // Schedule the refresh a bit before the token expires
             const refreshTime = timeUntilExpiry - TOKEN_REFRESH_BUFFER;
 
-            if(refreshTime > 0){
+            if (refreshTimeoutRef.current) {
+                clearTimeout(refreshTimeoutRef.current);
+            }
+
+            if (refreshTime <= 0) {
+                // Token already expired or about to expire — refresh immediately
                 performRefresh();
                 return;
             }
 
-            if(refreshTimeoutRef.current){
-                clearTimeout(refreshTimeoutRef.current);
-            }
-
+            // Schedule refresh for when the token is about to expire
             refreshTimeoutRef.current = setTimeout(() => {
                 performRefresh();
             }, refreshTime);
-        } catch (error){
+        } catch (error) {
             console.error("Failed to decode token: ", error);
         }
     };
 
     const performRefresh = async () => {
         const currentRefreshToken = useAuthStore.getState().refreshToken;
-        if(!currentRefreshToken){
+        if (!currentRefreshToken) {
             console.error('No refresh token available');
             return;
         }
 
-        try{
-            const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/auth/refresh`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-device-info': navigator.userAgent || 'Web/Desktop',
-                },
-                body: JSON.stringify({refreshToken: currentRefreshToken}),
-            });
-
-            if(!response.ok){
-                throw new Error('Token refresh failed');
-            }
-
-            const data = await response.json();
-            const { accessToken: newAccessToken, refreshToken: newRefreshToken, expiresIn } = data.data;
+        try {
+            const response = await authApi.refreshToken(currentRefreshToken);
+            const { accessToken: newAccessToken, refreshToken: newRefreshToken, expiresIn } = response.data.data;
 
             const decoded = jwtDecode<{
                 sub: string;
@@ -68,7 +58,7 @@ export const useTokenRefresh = () => {
                 permissions: string[];
             }>(newAccessToken);
 
-            const user ={
+            const user = {
                 id: decoded.sub,
                 email: decoded.email,
                 firstName: '', // You can extract this from the token if available
@@ -86,25 +76,25 @@ export const useTokenRefresh = () => {
 
             // Schedule the next refresh
             scheduleRefresh(newAccessToken);
-        } catch (error){
+        } catch (error) {
             console.error("Token refresh error: ", error);
 
             // Don't Logout immediately, let the API interceptor handle 401s
         }
     };
 
-    useEffect(()=>{
-        if(accessToken){
+    useEffect(() => {
+        if (accessToken) {
             scheduleRefresh(accessToken);
         }
 
         // Cleanup on unmount
         return () => {
-            if(refreshTimeoutRef.current){
+            if (refreshTimeoutRef.current) {
                 clearTimeout(refreshTimeoutRef.current);
             }
         };
-    } , [accessToken]);
+    }, [accessToken]);
 
-    return {scheduleRefresh};
+    return { scheduleRefresh };
 }

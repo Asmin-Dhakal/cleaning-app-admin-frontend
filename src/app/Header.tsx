@@ -12,15 +12,16 @@ export const Header = () => {
 
   return (
     <header
-      className="flex-shrink-0 px-6 py-4 flex justify-between items-center"
+      className="flex-shrink-0 px-6 flex justify-between items-center"
       style={{
+        height: "4rem",
         backgroundColor: theme.colors.surface,
         borderBottom: `1px solid ${theme.colors.border}`,
       }}
     >
       <h2
-        className="text-base font-semibold"
-        style={{ color: theme.colors.text }}
+        className="font-semibold"
+        style={{ color: theme.colors.text, fontSize: "1.125rem" }}
       >
         Admin Panel
       </h2>
@@ -28,7 +29,7 @@ export const Header = () => {
       <button
         onClick={handleLogout}
         disabled={logout.isPending}
-        className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+        className="flex items-center gap-2 px-4 py-1 rounded-lg text-sm font-medium transition-all"
         style={{
           backgroundColor: `${theme.colors.danger}15`,
           color: theme.colors.danger,

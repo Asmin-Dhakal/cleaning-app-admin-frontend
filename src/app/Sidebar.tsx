@@ -41,8 +41,11 @@ export const Sidebar = () => {
     >
       {/* Logo */}
       <div
-        className="px-6 py-5 flex-shrink-0"
-        style={{ borderBottom: `1px solid ${theme.colors.border}` }}
+        className="px-6 flex items-center flex-shrink-0"
+        style={{
+          height: "4rem",
+          borderBottom: `1px solid ${theme.colors.border}`,
+        }}
       >
         <h1
           className="font-extrabold leading-tight truncate"

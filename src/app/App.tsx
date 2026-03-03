@@ -1,23 +1,28 @@
 import { AppLayout } from "./AppLayout";
-import { AppRoutes } from "./routes";
-import { AuthProvider } from "./providers/AuthProvider";
+import { AppRoutes } from "./routes/routes";
+import { AuthProvider, ThemeProvider } from "./providers";
 import { useAuthStore } from "../features/auth/stores/authStore";
 
 function App() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return (
-    <AuthProvider>
-      <div className="min-h-screen bg-gray-100">
+    <ThemeProvider initialMode="dark">
+      <AuthProvider>
         {isAuthenticated ? (
-          <AppLayout>
-            <AppRoutes />
-          </AppLayout>
+          <div
+            className="min-h-screen"
+            style={{ backgroundColor: "var(--color-background)" }}
+          >
+            <AppLayout>
+              <AppRoutes />
+            </AppLayout>
+          </div>
         ) : (
           <AppRoutes />
         )}
-      </div>
-    </AuthProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

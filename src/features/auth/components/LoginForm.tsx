@@ -1,107 +1,208 @@
-import {useForm} from 'react-hook-form';
-import {zodResolver} from '@hookform/resolvers/zod';
-import {z} from 'zod';
-
-import { useLogin } from '../hooks/useAuth';
-import { Input } from '../../../shared/components/ui/Input';
-import { Button } from '../../../shared/components/ui/Button';
-import { Card } from '../../../shared/components/ui/Card';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { motion, type Variants } from "framer-motion";
+import { useLogin } from "../hooks/useAuth";
+import { useTheme } from "../../../app/providers/ThemeProvider";
+import { Input } from "../../../shared/components/ui/Input";
+import { Button } from "../../../shared/components/ui/Button";
 
 const loginSchema = z.object({
-    email: z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
 interface LoginFormProps {
-    onSuccess?: () => void;
-    onSignupClick?: () => void;
+  onSuccess?: () => void;
+  onSignupClick?: () => void;
 }
 
+const itemVariants: Variants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { type: "spring", stiffness: 300, damping: 24 },
+  },
+};
+
 export const LoginForm = ({ onSuccess, onSignupClick }: LoginFormProps) => {
-    const login = useLogin();
+  const login = useLogin();
+  const { theme } = useTheme();
 
-    const {
-        register,
-        handleSubmit,
-        formState: {errors},
-    } = useForm<LoginFormData>({
-        resolver: zodResolver(loginSchema),
-    });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
 
-    const onSubmit =  async (data: LoginFormData) => {
-        try {
-            await login.mutateAsync(data);
-            onSuccess?.();
-        } catch(error){
-            // Error Handled by mutation's onError
-        }
-    };
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      await login.mutateAsync(data);
+      onSuccess?.();
+    } catch (error) {
+      // Error handled by mutation
+    }
+  };
 
-    return (
-    <Card className="w-full max-w-md p-8">
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
-        <p className="text-gray-600 mt-2">Sign in to your admin account</p>
-      </div>
+  return (
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={{
+        visible: { transition: { staggerChildren: 0.1 } },
+      }}
+      className="w-full p-6 sm:p-8 md:p-10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] border backdrop-blur-2xl"
+      style={{
+        backgroundColor: `${theme.colors.surfaceElevated}cc`,
+        borderColor: theme.colors.border,
+        borderWidth: `1px`,
+      }}
+    >
+      <motion.div variants={itemVariants} className="text-center mb-10">
+        <h1
+          className="text-4xl font-extrabold tracking-tight mb-2"
+          style={{
+            backgroundImage: `linear-gradient(135deg, ${theme.colors.accent} 0%, ${theme.colors.info} 100%)`,
+            backgroundClip: "text",
+            WebkitBackgroundClip: "text",
+            color: "transparent",
+          }}
+        >
+          Welcome Back
+        </h1>
+        <p
+          style={{ color: theme.colors.textMuted }}
+          className="text-sm font-medium"
+        >
+          Sign in to your admin dashboard
+        </p>
+      </motion.div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <Input
-          label="Email"
-          type="email"
-          placeholder="admin@example.com"
-          error={errors.email?.message}
-          {...register('email')}
-        />
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <motion.div variants={itemVariants}>
+          <Input
+            label="Email"
+            type="email"
+            placeholder="admin@example.com"
+            error={errors.email?.message}
+            theme={theme}
+            {...register("email")}
+          />
+        </motion.div>
 
-        <Input
-          label="Password"
-          type="password"
-          placeholder="••••••••"
-          error={errors.password?.message}
-          {...register('password')}
-        />
+        <motion.div variants={itemVariants}>
+          <Input
+            label="Password"
+            type="password"
+            placeholder="••••••••"
+            error={errors.password?.message}
+            theme={theme}
+            {...register("password")}
+          />
+        </motion.div>
 
-        <div className="flex items-center justify-between text-sm">
-          <label className="flex items-center">
-            <input type="checkbox" className="rounded border-gray-300" />
-            <span className="ml-2 text-gray-600">Remember me</span>
+        <motion.div
+          variants={itemVariants}
+          className="flex items-center justify-between text-sm pt-1"
+        >
+          <label className="flex items-center cursor-pointer group">
+            <input
+              type="checkbox"
+              className="w-4 h-4 rounded transition-all"
+              style={{
+                borderColor: theme.colors.border,
+                backgroundColor: `rgba(0,0,0,0.2)`,
+              }}
+            />
+            <span
+              className="ml-2.5 group-hover:opacity-80 transition-opacity"
+              style={{ color: theme.colors.textMuted }}
+            >
+              Remember me
+            </span>
           </label>
-          <a href="#" className="text-blue-600 hover:text-blue-700">
+          <a
+            href="#"
+            style={{ color: theme.colors.accent }}
+            className="font-medium hover:opacity-80 transition-opacity"
+          >
             Forgot password?
           </a>
-        </div>
+        </motion.div>
 
         {login.isError && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-600">
-              Invalid email or password. Please try again.
-            </p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            className="p-3.5 border rounded-xl"
+            style={{
+              backgroundColor: `${theme.colors.danger}15`,
+              borderColor: `${theme.colors.danger}50`,
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <svg
+                className="w-5 h-5 flex-shrink-0"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                style={{ color: theme.colors.danger }}
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <p
+                className="text-sm font-medium"
+                style={{ color: theme.colors.danger }}
+              >
+                Invalid email or password
+              </p>
+            </div>
+          </motion.div>
         )}
 
-        <Button
-          type="submit"
-          className="w-full"
-          isLoading={login.isPending}
-        >
-          Sign In
-        </Button>
+        <motion.div variants={itemVariants} className="pt-4">
+          <Button type="submit" theme={theme} isLoading={login.isPending}>
+            <span className="relative z-10 flex items-center justify-center gap-2">
+              Sign In
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M14 5l7 7m0 0l-7 7m7-7H3"
+                />
+              </svg>
+            </span>
+          </Button>
+        </motion.div>
       </form>
 
-      <div className="mt-6 text-center">
-        <p className="text-sm text-gray-600">
-          Don't have an account?{' '}
+      <motion.div variants={itemVariants} className="mt-8 text-center">
+        <p className="text-sm" style={{ color: theme.colors.textMuted }}>
+          Don't have an account?{" "}
           <button
             type="button"
             onClick={onSignupClick}
-            className="text-blue-600 hover:text-blue-700 font-medium"
+            className="font-semibold hover:opacity-80 transition-opacity"
+            style={{ color: theme.colors.accent }}
           >
-            Sign up
+            Create one now
           </button>
         </p>
-      </div>
-    </Card>
+      </motion.div>
+    </motion.div>
   );
-}
+};

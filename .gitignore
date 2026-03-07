@@ -73,3 +73,4 @@ coverage
 *.p12
 *.pfx
 secrets/
+// Certificates and secrets should never be committed to version control. Make sure to add any files containing sensitive information to this .gitignore file.

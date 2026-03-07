@@ -3,11 +3,12 @@ import { useAuthStore } from "../stores/authStore";
 import { jwtDecode } from "jwt-decode";
 import { authApi } from "../api/authApi";
 
-const TOKEN_REFRESH_BUFFER = 60 * 1000; // 1 minute
+const TOKEN_REFRESH_BUFFER = 5 * 1000; // 5 seconds (use 60 * 1000 in production)
 
 export const useTokenRefresh = () => {
-    const { accessToken, refreshToken, setAuth } = useAuthStore();
+    const { accessToken, setAuth } = useAuthStore();
     const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const isRefreshingRef = useRef(false);
 
 
     const scheduleRefresh = (token: string) => {
@@ -40,15 +41,22 @@ export const useTokenRefresh = () => {
     };
 
     const performRefresh = async () => {
+        if (isRefreshingRef.current) return; // prevent concurrent refresh calls
+        isRefreshingRef.current = true;
+
         const currentRefreshToken = useAuthStore.getState().refreshToken;
         if (!currentRefreshToken) {
             console.error('No refresh token available');
+            isRefreshingRef.current = false;
             return;
         }
 
         try {
+
             const response = await authApi.refreshToken(currentRefreshToken);
             const { accessToken: newAccessToken, refreshToken: newRefreshToken, expiresIn } = response.data.data;
+
+            isRefreshingRef.current = false;
 
             const decoded = jwtDecode<{
                 sub: string;
@@ -78,7 +86,7 @@ export const useTokenRefresh = () => {
             scheduleRefresh(newAccessToken);
         } catch (error) {
             console.error("Token refresh error: ", error);
-
+            isRefreshingRef.current = false;
             // Don't Logout immediately, let the API interceptor handle 401s
         }
     };

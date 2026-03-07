@@ -1,18 +1,18 @@
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion, type Variants } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { useLogin } from "../hooks/useAuth";
 import { useTheme } from "../../../app/providers/ThemeProvider";
 import { Input } from "../../../shared/components/ui/Input";
 import { Button } from "../../../shared/components/ui/Button";
 
-const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;
+type LoginFormData = {
+  email: string;
+  password: string;
+};
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -31,6 +31,16 @@ const itemVariants: Variants = {
 export const LoginForm = ({ onSuccess, onSignupClick }: LoginFormProps) => {
   const login = useLogin();
   const { theme } = useTheme();
+  const { t } = useTranslation();
+
+  const loginSchema = useMemo(
+    () =>
+      z.object({
+        email: z.string().email(t("auth.validation.emailInvalid")),
+        password: z.string().min(6, t("auth.validation.passwordMin")),
+      }),
+    [t],
+  );
 
   const {
     register,
@@ -73,20 +83,20 @@ export const LoginForm = ({ onSuccess, onSignupClick }: LoginFormProps) => {
             color: "transparent",
           }}
         >
-          Welcome Back
+          {t("auth.login.title")}
         </h1>
         <p
           style={{ color: theme.colors.textMuted }}
           className="text-sm font-medium"
         >
-          Sign in to your admin dashboard
+          {t("auth.login.subtitle")}
         </p>
       </motion.div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <motion.div variants={itemVariants}>
           <Input
-            label="Email"
+            label={t("auth.login.emailLabel")}
             type="email"
             placeholder="admin@example.com"
             error={errors.email?.message}
@@ -97,7 +107,7 @@ export const LoginForm = ({ onSuccess, onSignupClick }: LoginFormProps) => {
 
         <motion.div variants={itemVariants}>
           <Input
-            label="Password"
+            label={t("auth.login.passwordLabel")}
             type="password"
             placeholder="••••••••"
             error={errors.password?.message}
@@ -123,7 +133,7 @@ export const LoginForm = ({ onSuccess, onSignupClick }: LoginFormProps) => {
               className="ml-2.5 group-hover:opacity-80 transition-opacity"
               style={{ color: theme.colors.textMuted }}
             >
-              Remember me
+              {t("auth.login.rememberMe")}
             </span>
           </label>
           <a
@@ -131,7 +141,7 @@ export const LoginForm = ({ onSuccess, onSignupClick }: LoginFormProps) => {
             style={{ color: theme.colors.accent }}
             className="font-medium hover:opacity-80 transition-opacity"
           >
-            Forgot password?
+            {t("auth.login.forgotPassword")}
           </a>
         </motion.div>
 
@@ -162,7 +172,7 @@ export const LoginForm = ({ onSuccess, onSignupClick }: LoginFormProps) => {
                 className="text-sm font-medium"
                 style={{ color: theme.colors.danger }}
               >
-                Invalid email or password
+                {t("auth.login.invalidCredentials")}
               </p>
             </div>
           </motion.div>
@@ -171,7 +181,7 @@ export const LoginForm = ({ onSuccess, onSignupClick }: LoginFormProps) => {
         <motion.div variants={itemVariants} className="pt-4">
           <Button type="submit" theme={theme} isLoading={login.isPending}>
             <span className="relative z-10 flex items-center justify-center gap-2">
-              Sign In
+              {t("auth.login.signIn")}
               <svg
                 className="w-4 h-4"
                 fill="none"
@@ -192,14 +202,14 @@ export const LoginForm = ({ onSuccess, onSignupClick }: LoginFormProps) => {
 
       <motion.div variants={itemVariants} className="mt-8 text-center">
         <p className="text-sm" style={{ color: theme.colors.textMuted }}>
-          Don't have an account?{" "}
+          {t("auth.login.noAccount")}{" "}
           <button
             type="button"
             onClick={onSignupClick}
             className="font-semibold hover:opacity-80 transition-opacity"
             style={{ color: theme.colors.accent }}
           >
-            Create one now
+            {t("auth.login.signUp")}
           </button>
         </p>
       </motion.div>

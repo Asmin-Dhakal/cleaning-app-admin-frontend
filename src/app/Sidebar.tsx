@@ -12,23 +12,29 @@ import {
   MessageSquare,
   UserCog,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useTheme } from "./providers/ThemeProvider";
 
 export const Sidebar = () => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   const menuItems = [
-    { to: "/", icon: LayoutDashboard, label: "Dashboard" },
-    { to: "/notifications", icon: Bell, label: "Notifications" },
-    { to: "/bookings", icon: CalendarDays, label: "Bookings" },
-    { to: "/appointments", icon: CalendarClock, label: "Appointments" },
-    { to: "/clients", icon: Users, label: "Clients" },
-    { to: "/properties", icon: Building2, label: "Properties" },
-    { to: "/income", icon: DollarSign, label: "Income" },
-    { to: "/expenses", icon: Receipt, label: "Expenses" },
-    { to: "/reports", icon: BarChart3, label: "Reports" },
-    { to: "/feedback", icon: MessageSquare, label: "Feedback" },
-    { to: "/cleaners", icon: UserCog, label: "Cleaners" },
+    { to: "/", icon: LayoutDashboard, label: t("navigation.dashboard") },
+    { to: "/notifications", icon: Bell, label: t("navigation.notifications") },
+    { to: "/bookings", icon: CalendarDays, label: t("navigation.bookings") },
+    {
+      to: "/appointments",
+      icon: CalendarClock,
+      label: t("navigation.appointments"),
+    },
+    { to: "/clients", icon: Users, label: t("navigation.clients") },
+    { to: "/properties", icon: Building2, label: t("navigation.properties") },
+    { to: "/income", icon: DollarSign, label: t("navigation.income") },
+    { to: "/expenses", icon: Receipt, label: t("navigation.expenses") },
+    { to: "/reports", icon: BarChart3, label: t("navigation.reports") },
+    { to: "/feedback", icon: MessageSquare, label: t("navigation.feedback") },
+    { to: "/cleaners", icon: UserCog, label: t("navigation.cleaners") },
   ];
 
   return (

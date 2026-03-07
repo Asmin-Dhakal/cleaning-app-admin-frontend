@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { LoginForm } from "../components/LoginForm";
 import { SignupForm } from "../components/SignupForm";
 import { useTheme } from "../../../app/providers/ThemeProvider";
+import { LanguageSelector } from "../../../shared/components/ui";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -24,6 +25,11 @@ export const Login = () => {
     >
       {/* Dynamic Grid Background overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+
+      {/* Language selector - top right */}
+      <div className="absolute top-4 right-6 z-10">
+        <LanguageSelector />
+      </div>
 
       {/* Floating Gradient Orbs */}
       <motion.div

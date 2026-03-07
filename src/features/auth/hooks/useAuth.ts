@@ -1,5 +1,5 @@
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {authApi} from '../api/authApi';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { authApi } from '../api/authApi';
 import { useAuthStore } from '../stores/authStore';
 import type {
     LoginCredentials,
@@ -7,7 +7,7 @@ import type {
     AuthTokens,
     User,
 } from '../types/auth.ts';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 // Decode JWT to get user info
 const decodeToken = (token: string): User => {
@@ -33,7 +33,7 @@ const decodeToken = (token: string): User => {
 // Register Hook
 export const useRegister = () => {
     const queryClient = useQueryClient();
-    const { setAuth} = useAuthStore();
+    const { setAuth } = useAuthStore();
 
     return useMutation({
         mutationFn: authApi.register,
@@ -68,11 +68,11 @@ export const useLogin = () => {
 // Logout Hook
 export const useLogout = () => {
     const queryClient = useQueryClient();
-    const {logout, accessToken, refreshToken} = useAuthStore();
+    const { logout, accessToken, refreshToken } = useAuthStore();
 
     return useMutation({
         mutationFn: () => {
-            if(!accessToken || !refreshToken){
+            if (!accessToken || !refreshToken) {
                 throw new Error('No tokens available for logout');
             }
             return authApi.logout(accessToken, refreshToken);
@@ -95,7 +95,7 @@ export const useRefreshToken = () => {
 
     return useMutation({
         mutationFn: () => {
-            if(!refreshToken){
+            if (!refreshToken) {
                 throw new Error('No refresh token available');
             }
             return authApi.refreshToken(refreshToken);
@@ -116,7 +116,7 @@ export const useSessions = () => {
     return useQuery({
         queryKey: ['sessions'],
         queryFn: () => {
-            if(!accessToken){
+            if (!accessToken) {
                 throw new Error('No access token available');
             }
             return authApi.getSessions(accessToken);

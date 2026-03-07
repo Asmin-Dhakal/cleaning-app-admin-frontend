@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { useTheme } from "../../../app/providers/ThemeProvider";
 
 export const Dashboard = () => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <div
@@ -31,7 +33,7 @@ export const Dashboard = () => {
           color: "transparent",
         }}
       >
-        Work in Progress
+        {t("dashboard.title")}
       </motion.h1>
 
       {/* Subtitle */}
@@ -42,8 +44,7 @@ export const Dashboard = () => {
         className="text-lg text-center max-w-md"
         style={{ color: theme.colors.textMuted }}
       >
-        The dashboard is currently under development. Check back soon for
-        powerful analytics and management tools.
+        {t("dashboard.subtitle")}
       </motion.p>
 
       {/* Animated progress bar */}

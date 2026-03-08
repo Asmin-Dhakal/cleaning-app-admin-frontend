@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { Login } from "../../features/auth/pages/Login";
 import { Dashboard } from "../../features/dashboard/pages/Dashboard";
 import { ProtectedRoute } from "../../features/auth/components/ProtectedRoute";
+import { Clients } from "../../features/clients/pages/Clients";
 
 export const AppRoutes = () => {
   return (
@@ -15,6 +16,14 @@ export const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/clients"
+        element={
+          <ProtectedRoute>
+            <Clients />
           </ProtectedRoute>
         }
       />

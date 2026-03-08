@@ -57,6 +57,33 @@ const es = {
         subtitle:
             "El panel está actualmente en desarrollo. Vuelve pronto para obtener potentes herramientas de análisis y gestión.",
     },
+    clients: {
+        title: "Solicitudes de Clientes",
+        tabs: {
+            pending: "Pendientes",
+            active: "Activos",
+            deactivated: "Desactivados",
+        },
+        columns: {
+            name: "Nombre",
+            email: "Correo",
+            phone: "Teléfono",
+            createdAt: "Creado",
+            status: "Estado",
+            actions: "Acciones",
+        },
+        status: {
+            active: "Activo",
+            pending: "Pendiente",
+        },
+        actions: {
+            activate: "Activar",
+            deactivate: "Desactivar",
+        },
+        loading: "Cargando clientes...",
+        error: "No se pudieron cargar los clientes.",
+        empty: "No hay clientes en esta lista.",
+    },
 } as const;
 
 export default es;

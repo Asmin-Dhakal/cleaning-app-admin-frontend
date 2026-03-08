@@ -57,6 +57,34 @@ const en = {
         subtitle:
             "The dashboard is currently under development. Check back soon for powerful analytics and management tools.",
     },
+    clients: {
+        title: "Client Requests",
+        tabs: {
+            pending: "Pending",
+            all: "All",
+            deactivated: "Deactivated",
+        },
+        columns: {
+            name: "Name",
+            email: "Email",
+            phone: "Phone",
+            createdAt: "Created",
+            status: "Status",
+            actions: "Actions",
+        },
+        status: {
+            active: "Active",
+            pending: "Pending",
+            deactivated: "Deactivated",
+        },
+        actions: {
+            activate: "Activate",
+            deactivate: "Deactivate",
+        },
+        loading: "Loading clients...",
+        error: "Failed to load clients.",
+        empty: "No clients found in this list.",
+    },
 } as const;
 
 export default en;

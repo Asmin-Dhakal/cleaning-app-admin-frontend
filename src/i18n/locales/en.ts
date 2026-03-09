@@ -61,7 +61,7 @@ const en = {
         title: "Client Requests",
         tabs: {
             pending: "Pending",
-            all: "All",
+            active: "Active",
             deactivated: "Deactivated",
         },
         columns: {

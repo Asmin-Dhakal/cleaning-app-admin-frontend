@@ -57,7 +57,7 @@ export const Clients = () => {
         />
         <TabButton
           active={tab === "active"}
-          label={t("clients.tabs.all")}
+          label={t("clients.tabs.active")}
           count={activeQuery.data?.length ?? 0}
           onClick={() => setTab("active")}
         />

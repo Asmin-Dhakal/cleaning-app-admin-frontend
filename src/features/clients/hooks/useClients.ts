@@ -10,7 +10,10 @@ export const CLIENT_QUERY_KEYS = {
 export const useActiveClients = () => {
     return useQuery({
         queryKey: CLIENT_QUERY_KEYS.active,
-        queryFn: async () => (await clientAdminApi.getClients()).data,
+        queryFn: async () => {
+            const clients = (await clientAdminApi.getClients()).data;
+            return clients.filter((client) => client.isActive);
+        },
     });
 };
 
